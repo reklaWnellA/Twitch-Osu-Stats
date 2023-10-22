@@ -1,0 +1,17 @@
+{
+  "name": "osu-stats-twitch",
+  "version": "1.0.0",
+  "description": "Reply commands and send osu stats for Twitch chat",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node main.js"
+  },
+  "author": "Allen Walker",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^6.0.0",
+    "osu-web.js": "^1.3.1",
+    "tmi.js": "^1.2.1"
+  }
+}
