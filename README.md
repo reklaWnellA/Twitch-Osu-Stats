@@ -1,8 +1,16 @@
 # About
 
-This is a Twitch chat bot to reply to commands (!np, !skin and etc) and to send osu status updates (pp, rank and map rank)
+This is a Twitch chat bot to reply commands (!np, !skin, etc) and to send osu status update (pp, rank and map rank)
 
 Intial idea and code base from [Ceiling Waffle's osu-np](https://bitbucket.org/ceilingwaffle/osu-np/src/master), feel free to help the project improving the code or contacting me in discord: `reklawnella`
+
+```
+AllenWaruker: +727pp!
+AllenWaruker: Rank: #1 (+1)
+AllenWaruker: Allen Walker achieved rank #1 on xi - Blue Zenith [FOUR DIMENSIONS]
+AllenWaruker: !np
+AllenWaruker: Kuba Oms - My Love [Insane] (http://osu.ppy.sh/b/397535)
+```
 
 # Requirements
 - NodeJS from https://nodejs.org/en/download/
