@@ -43,11 +43,13 @@ async function getStats(){
   }
   
   if (lastPPStats != pp){
-    let gainedPP = pp - lastPPStats
+    let gainedPP = Math.ceil(pp - lastPPStats)
+    lastPPStats = pp
     sendTwitchMessage(`${( gainedPP > 0 ? '+'+ gainedPP : gainedPP )}pp!`);
   }
   if (lastRankStats != rank){
     let gainedRank = rank - lastRankStats
+    lastRankStats = rank
     sendTwitchMessage(`Rank: #${rank} (${( gainedRank > 0 ? '+'+ gainedRank : gainedRank )})`);
   }
 }
@@ -68,6 +70,7 @@ async function getRecentPlay(){
   }
 
   if (lastRecentPlayId != id){
+    lastRecentPlayId = id
     let rank = recentPlay[0].rank;
     if (rank > minimumMapRank)
       return;
