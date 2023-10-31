@@ -50,7 +50,7 @@ async function getStats(){
   if (lastRankStats != rank){
     let gainedRank = rank - lastRankStats
     lastRankStats = rank
-    sendTwitchMessage(`Rank: #${rank} (${( gainedRank > 0 ? '+'+ gainedRank : gainedRank )})`);
+    sendTwitchMessage(`Rank: #${rank} (${( gainedRank > 0 ? '-' + gainedRank : '+' + gainedRank )})`);
   }
 }
 async function getRecentPlay(){
