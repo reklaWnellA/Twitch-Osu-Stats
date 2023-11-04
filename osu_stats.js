@@ -45,7 +45,8 @@ async function getStats(){
   if (lastPPStats != pp){
     let gainedPP = Math.ceil(pp - lastPPStats)
     lastPPStats = pp
-    sendTwitchMessage(`${( gainedPP > 0 ? '+'+ gainedPP : gainedPP )}pp!`);
+    if (gainedPP != 0) // filter 0 pp messages
+      sendTwitchMessage(`${( gainedPP > 0 ? '+'+ gainedPP : gainedPP )}pp!`);
   }
   if (lastRankStats != rank){
     let gainedRank = rank - lastRankStats
