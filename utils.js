@@ -1,10 +1,7 @@
+const getNow = () =>
+	new Date().toISOString().replace(/T/, " ").replace(/\..+/, "");
 
-function getNow() {
-	return new Date().toISOString().replace(/T/, " ").replace(/\..+/, "");
-}
-  
-function logError(err) {
-	console.log(`[${getNow()}] ${err}`);
-}
+const log = (msg) =>
+	console.log(`[${getNow()}] ${msg}`);
 
-module.exports = { getNow, logError };
+module.exports = log;

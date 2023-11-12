@@ -1,19 +1,17 @@
 require("dotenv").config();
-
-const utils = require('./utils');
+const log = require('./utils');
 const { Client, Auth } = require('osu-web.js');
-const twitch = require('./twitch');
+const sendTwitchMessage = require('./twitch');
 
 const userId = parseInt(process.env.OSU_USER_ID);
 const userOAuthId = process.env.OSU_OAUTH_CLIENT_ID;
 const userOAuthSecret = process.env.OSU_OAUTH_CLIENT_SECRET;
 const minimumMapRank = parseInt(process.env.OSU_MINIMUM_MAP_RANK);
-const twitchChannel = process.env.TWITCH_TARGET_CHANNEL
-
-console.log(`[${utils.getNow()}] Starting osu stats...`);
-
 const auth = new Auth(userOAuthId, userOAuthSecret, '');
 var client
+
+log('Starting Osu Stats...');
+
 (async () => {
   let token = await auth.clientCredentialsGrant();
   client = new Client(token.access_token);
@@ -21,12 +19,12 @@ var client
   // get initial stats
   await getStats();
   await getRecentPlay();
+  
+  log('Osu Stats started!')
 })();
 
 var lastPPStats, lastRankStats, lastRecentPlayId;
 async function getStats(){
-  console.log(`[${utils.getNow()}] getting stats`);
-
   let userStats = await client.users.getUser(userId, {
     urlParams: { mode: 'osu' }
   });
@@ -38,7 +36,7 @@ async function getStats(){
     lastPPStats = pp;
     lastRankStats = rank
 
-    console.log(`Status: ${userStats.username} #${rank}, pp: ${pp}`);
+    log(`Osu Stats: ${userStats.username} #${rank}, pp: ${pp}`);
     return;
   }
   
@@ -55,8 +53,6 @@ async function getStats(){
   }
 }
 async function getRecentPlay(){
-  console.log(`[${utils.getNow()}] getting recent play`);
-
   let recentPlay = await client.users.getUserRecentActivity(userId, {
     query: { limit:1 }
   });
@@ -66,7 +62,6 @@ async function getRecentPlay(){
   
   if (!lastRecentPlayId){
     lastRecentPlayId = id;
-    console.log('lastRecentPlayId: '+ id);
     return;
   }
 
@@ -78,15 +73,43 @@ async function getRecentPlay(){
     
     let user = recentPlay[0].user.username
     let map = recentPlay[0].beatmap.title
-    sendTwitchMessage(`${user} achieved rank #${rank} on ${map}`);
+    let message = `${user} achieved rank #${rank} on ${map}`
+    sendTwitchMessage(message);
+    log(message)
   }
 }
 
-function sendTwitchMessage(message){
-  twitch.client.say(twitchChannel, message);
+async function getBeatmapInfo(beatmapId){
+  log(`Getting beatmap info: ${beatmapId}`)
+  let info
+  try {
+    info = await client.beatmaps.getBeatmap(parseInt(beatmapId));
+  } catch (e) {
+    log('An error occurred while trying to get beatmap information')
+  }
+  
+  if (!info) return
+
+  let artist = info.beatmapset.artist;
+  let title = info.beatmapset.title;
+  let diff = info.version;
+  let status = info.status
+  let stars = info.difficulty_rating
+  let bpm = info.bpm
+  let ar = info.ar
+  let od = info.accuracy
+  let cs = info.cs
+  let hp = info.drain
+  
+  return {
+    message: `${artist} - ${title} [${diff}]`,
+    stats: `${status} | ★ ${stars} | BPM ${bpm} | AR ${ar} | OD ${od} | CS ${cs} | HP ${hp}`
+  }
 }
 
 setInterval(async () => {
   await getStats();
   await getRecentPlay();
 }, parseInt(process.env.OSU_REFRESH_STATS_COOLDOWN));
+
+module.exports = getBeatmapInfo
